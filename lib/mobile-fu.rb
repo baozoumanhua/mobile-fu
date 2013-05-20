@@ -111,13 +111,30 @@ module ActionController
       # 'Tablet' view.
 
       def set_mobile_format
-        if request.format.html? && !mobile_exempt? && is_mobile_device? && !request.xhr?
-          request.format = :mobile unless session[:mobile_view] == false
-          session[:mobile_view] = true if session[:mobile_view].nil?
-        elsif request.format.html? && !mobile_exempt? && is_tablet_device? && !request.xhr?
-          request.format = :tablet unless session[:tablet_view] == false
-          session[:tablet_view] = true if session[:tablet_view].nil?
-        end
+        # -----original code start-----
+        # if request.format.html? && !mobile_exempt? && is_mobile_device? && !request.xhr?
+        #   request.format = :mobile unless session[:mobile_view] == false
+        #   session[:mobile_view] = true if session[:mobile_view].nil?
+        # elsif request.format.html? && !mobile_exempt? && is_tablet_device? && !request.xhr?
+        #   request.format = :tablet unless session[:tablet_view] == false
+        #   session[:tablet_view] = true if session[:tablet_view].nil?
+        # end
+        # -----original code end-----
+
+        return if request.host == "baozoumanhua.com"
+        return unless request.format.blank? or request.format.to_s =~ /html|mobile|wml/ 
+
+        view = if is_mobile_device? && !request.xhr?
+            cookies[:mobile_view] ||= 'mobile'
+            if cookies[:mobile_view] == true
+              "mobile"
+            else
+              cookies[:mobile_view]
+            end
+          else
+            cookies[:mobile_view] || false
+          end
+        request.format = view.to_sym unless [true,false,nil].include?(view)
       end
 
       # Returns either true or false depending on whether or not the format of the

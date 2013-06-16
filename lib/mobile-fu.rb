@@ -120,7 +120,7 @@ module ActionController
         #   session[:tablet_view] = true if session[:tablet_view].nil?
         # end
         # -----original code end-----
-
+=begin
         return if request.host == "baozoumanhua.com"
         return unless request.format.blank? or request.format.to_s =~ /html|mobile|wml/ 
 
@@ -135,6 +135,7 @@ module ActionController
             cookies[:mobile_view] || false
           end
         request.format = view.to_sym unless [true,false,nil].include?(view)
+=end
       end
 
       # Returns either true or false depending on whether or not the format of the
